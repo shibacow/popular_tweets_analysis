@@ -27,7 +27,7 @@ def save_png(driver,url,base_path,logging):
             os.mkdir(bname_path)
         return bname_path+os.sep+tid+'.png'
     driver.get(url)
-    driver.implicitly_wait(5.0)
+    driver.implicitly_wait(3.0)
     try:
         png = driver.find_element_by_xpath('/html/body/div[30]/div[2]/div[3]/div/div/div[1]/div[1]')
         if png:
