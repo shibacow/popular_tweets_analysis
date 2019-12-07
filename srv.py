@@ -25,11 +25,23 @@ class TW(object):
     def fetch(self):
         return self.mp.col.find({self.k:{'$gt':self.mn,'$lte':self.mx}}).\
                sort([(self.k,pymongo.DESCENDING)])
+def conv_args(k):
+    if request.args.get(k,None):
+        mx_base=request.args.get(k)
+        return int(mx_base)
+    else:
+        None
 
 @app.route('/')
 def index():
     mx=250_000
     mn=230_000
+    mx2 = conv_args('mx')
+    mn2 = conv_args('mn')
+    if mx2:
+        mx=mx2
+    if mn2:
+        mn=mn2
     tfav = TW('max_fav',mx,mn,g.mp)
     trt = TW('max_rt',mx,mn,g.mp)
     return render_template('index.html',max_favs=tfav.fetch(),\
