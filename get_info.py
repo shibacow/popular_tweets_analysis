@@ -11,6 +11,7 @@ user_id,created_at,text,max(favorite_count) as max_fav,
 max(retweet_count) as max_rt
 from 
 twitter.temp_retweeted_status
+where lang='ja'
 group by id,user_id,created_at,text
 having max_fav > 5000 or max_rt > 5000
 """)

@@ -23,6 +23,8 @@ class MongoOp(object):
         self.db=self.con.fav_tweet
         self.col=self.db['2019-12-07']
         self.test=self.db['test_test']
+        for k in ('url','tweet_id','user_id','created_at','max_rt','max_fav'):
+            self.col.create_index(k)
     def __del__(self):
         if self.con:
             self.con.close()

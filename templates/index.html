@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% macro show_tw(tlist) %}
+
+{% for t in tlist  %}
+<p>
+  <span>
+    fav:{{t['created_at']}}
+  </span>
+  &nbsp;
+  <span>
+    rt:{{t['max_rt']}}
+  </span>
+  &nbsp;
+  <span>
+    fav:{{t['max_fav']}}
+  </span>
+  &nbsp;
+  <a href="{{t['url']}}" target="_blank" rel="noopener">
+    {{t['text']}}
+  </a>
+</p>
+{% endfor %}
+
+{% endmacro %}
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+      <div>
+	<h3>人気ファボ</h3>
+	{{show_tw(max_favs)}}
+      </div>
+      <div>
+	<h3>人気RT</h3>
+	{{show_tw(max_rts)}}
+      </div>
+    <div> 
+  </body>
+</html>
+
