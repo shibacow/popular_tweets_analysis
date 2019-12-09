@@ -3,13 +3,15 @@
 from mog_op import MongoOp
 import get_png
 import logging
-logging.basicConfig(level=logging.INFO)
-
+fmt = "%(asctime)s %(levelname)s %(name)s :%(message)s"
+logging.basicConfig(level=logging.INFO,filename='fetch.log',format=fmt)
+import pymongo
 def add_fpath():
     mp=MongoOp('localhost')
     k='max_rt'
     cnt=mp.col.count({k:{'$gt':50_000}})
-    for i,a in enumerate(mp.col.find({k:{'$gt':50_000}})):
+    ql=mp.col.find({k:{'$gt':50_000}}).sort([(k,pymongo.DESCENDING)])
+    for i,a in enumerate(ql):
         url = a['url']
         (r,path) = get_png.check_path('static',url)
         up_elm={'$set':{'fpath':path}}
@@ -24,7 +26,8 @@ def get_img():
     k='max_fav'
     cond={k:{'$gt':50_000},'fpath':{'$exists':False}}
     cnt=mp.col.count(cond)
-    for i,a in enumerate(mp.col.find(cond)):
+    ql=mp.col.find(cond).sort([(k,pymongo.DESCENDING)])
+    for i,a in enumerate(ql):
         url = a['url']
         if 'fpath' in a:continue
         (r,path) = get_png.check_path('static',url)

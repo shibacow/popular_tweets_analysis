@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+
+{% macro gen_page(pages) %}
+{% for skip,limit in pages %}
+<a href="{{url_for('index',limit=limit,skip=skip)}}">
+  {{skip}},
+</a>
+{% endfor %}
+{% endmacro %}
+
+{% macro pnation(pagination) %}
+{{ pagination.info }}
+{{ pagination.links }}
+{% endmacro %}
+
 {% macro show_tw(tlist) %}
 
 {% for t in tlist  %}
@@ -17,7 +31,8 @@
   &nbsp;
   <a href="{{t['url']}}" target="_blank" rel="noopener">
     {{t['text']}}
-  </a>
+    <img src="{{t.get('fpath')}}"/>
+  </a>  
 </p>
 {% endfor %}
 
@@ -33,14 +48,16 @@
   <body>
     <div class="container">
       <div>
-	<h3>人気ファボ</h3>
-	{{show_tw(max_favs)}}
+	{{ pnation(pagination) }}
       </div>
       <div>
-	<h3>人気RT</h3>
-	{{show_tw(max_rts)}}
+	<h3> {{mode}} </h3>
+	{{show_tw(popular_tweets)}}
       </div>
-    <div> 
+      <div>
+	{{ pnation(pagination) }}
+      </div>
+    <div>  {# container #}
   </body>
 </html>
 

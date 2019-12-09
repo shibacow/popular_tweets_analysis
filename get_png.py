@@ -4,7 +4,7 @@
 from selenium import webdriver
 import time
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException,TimeoutException
 import os
 import logging
 
@@ -39,7 +39,7 @@ def get_path(base_path,url):
 
 def save_png(driver,url,base_path,logging):
     driver.get(url)
-    driver.implicitly_wait(3.0)
+    driver.implicitly_wait(4.0)
     try:
         png = driver.find_element_by_xpath('/html/body/div[30]/div[2]/div[3]/div/div/div[1]/div[1]')
         if png:
@@ -54,9 +54,14 @@ def save_png(driver,url,base_path,logging):
             logging.error(msg)
             return None
     except NoSuchElementException as err:
-        msg="error url is not css selector={}".format(url)
+        msg="error {} url is not css selector={}".format(err,url)
         logging.error(msg)
         return None
+    except TimeoutException as err:
+        msg="error {} timeout={}".format(err,url)
+        logging.error(msg)
+        return None
+
     #driver.save_screenshot('screenshot.png')
 def close(driver):
     driver.close()
