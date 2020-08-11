@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.before_request
 def before():
-    g.mp = MongoOp('localhost')
+    g.mp = MongoOp('localhost',db='fav_tweet',col='2019-12-07')
 
 @app.after_request
 def after_request(response):

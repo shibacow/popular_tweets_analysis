@@ -6,10 +6,8 @@ import logging
 fmt = "%(asctime)s %(levelname)s %(name)s :%(message)s"
 logging.basicConfig(level=logging.INFO,filename='fetch.log',format=fmt)
 import pymongo
-import time
-
 def add_fpath():
-    mp=MongoOp('localhost',)
+    mp=MongoOp('localhost')
     k='max_rt'
     cnt=mp.col.count({k:{'$gt':50_000}})
     ql=mp.col.find({k:{'$gt':50_000}}).sort([(k,pymongo.DESCENDING)])
@@ -23,21 +21,15 @@ def add_fpath():
         msg='k={} cnt={} i={} url={} path={} col_r={}'.format(k,cnt,i,url,path,col_r)
         logging.info(msg)
 def get_img():
-    mp=MongoOp('localhost',db='fav_tweet',col='hage')
+    mp=MongoOp('localhost','twitter','user_kabutoyama_taro')
     driver = get_png.factory()
+    k='max_fav'
+    #cond={k:{'$gt':50_000},'fpath':{'$exists':False}}
     cond={'fpath':{'$exists':False}}
     cnt=mp.col.count(cond)
-    k='created_at'
-    ql=mp.col.find(cond).sort([(k,pymongo.DESCENDING)])
-    #https://twitter.com/terrakei07/status/1211085215696732160
-    ql=list(ql)
+    ql=mp.col.find(cond)
     for i,a in enumerate(ql):
-        if 'user' in a and  'screen_name' in a['user']:
-            screen_name=a['user']['screen_name']
-        else:
-            screen_name='_'
-        tid=a['tweet_id']
-        url='http://twitter.com/{}/status/{}'.format(screen_name,tid)
+        url = a['url']
         if 'fpath' in a:continue
         (r,path) = get_png.check_path('static',url)
         if r:
@@ -53,7 +45,6 @@ def get_img():
         if not result:
             up_elm={'$set':{'fpath':'NotFound'}}
         col_r = mp.col.update_one({'_id':a['_id']},up_elm)
-        time.sleep(5)
     get_png.close(driver)
 
 def main():

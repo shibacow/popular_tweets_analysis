@@ -11,7 +11,8 @@ user_id,created_at,text,max(favorite_count) as max_fav,
 max(retweet_count) as max_rt
 from 
 twitter.temp_retweeted_status
-where lang='ja'
+where lang='ja' and text like "%ハゲ%"
+and retweet_count > 3000 and not (text like "%プレゼント%" or text like "%チャンス%" or text like "%抽選%" or text like "%キャンペーン%" or text like "%応募%") 
 group by id,user_id,created_at,text
 having max_fav > 5000 or max_rt > 5000
 """)
@@ -41,7 +42,7 @@ def insert_mp(mp,results):
 
     
 def main():
-    mp = MongoOp('localhost')
+    mp = MongoOp('localhost','fav_tweet','hage')
     results = execute_sql()
     insert_mp(mp,results)
 if __name__=='__main__':main()
